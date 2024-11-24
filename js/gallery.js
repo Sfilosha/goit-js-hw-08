@@ -65,15 +65,38 @@ const images = [
   },
 ];
 
-// Script
-
-<li class="gallery-item">
-  <a class="gallery-link" href="large-image.jpg">
+// Generate 1 image
+const createImage = ({preview, original, description}) => {
+    return `
+    <li class="gallery-item">
+    <a class="gallery-link" href="#">
     <img
       class="gallery-image"
-      src="small-image.jpg"
-      data-source="large-image.jpg"
-      alt="Image description"
+      src="${preview}"
+      data-source="${original}"
+      alt="${description}"
     />
-  </a>
-</li>
+    </a>
+    </li>
+    `;
+}
+
+// Collect all images into one gallery
+const galleryTemplate = images.map(el => createImage(el)).join('');
+
+// Find and add generated gallery in HTML
+const galleryEl = document.querySelector("ul.gallery");
+galleryEl.innerHTML = galleryTemplate;
+
+// Add event listener on UL.Gallery
+const handleGalleryClick = galleryEl.addEventListener("click", event => {
+    // Confirm that clicked on item
+    if (event.target === event.currentTarget) {
+        return;
+    }
+    // Modal template
+    const imageItem = event.target;
+    const modalTemplate = basicLightbox.create(`
+    <img src="${imageItem.dataset.source}" width="600">Text</img>`);
+    modalTemplate.show();
+});
